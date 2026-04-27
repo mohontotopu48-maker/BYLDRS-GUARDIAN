@@ -152,3 +152,39 @@ Stage Summary:
 - File upload (drag & drop) + email capture + form submission all wired
 - API route validates input and acknowledges receipt
 - Design continuity maintained (Guardian Blue bg, hex pattern, same header/footer)
+
+---
+Task ID: 6
+Agent: Main Agent
+Task: Multi-Step Lead Capture + GHL Integration + Dashboard + Roofing Template
+
+Work Log:
+- Rewrote /join (page.tsx) with 2-step form:
+  - Step 1: Enter passcode → "CLAIM YOUR LIFELONG PROTECTION"
+  - Step 2: First name (required), last name, email (required), phone (optional) → "ACTIVATE MY VAULT"
+  - Step 3: "Vault Activated" success → auto-redirect to /dashboard
+  - Step indicator bar, passcode verified badge on step 2, back button, error handling
+- Created GHL webhook API at /api/guardian/lead (POST):
+  - Validates email format, sends to GHL_WEBHOOK_URL env variable
+  - GHL payload includes: passcode, email, first_name, last_name, phone, source, tag, vault_status
+  - Falls back to console log if webhook URL not configured
+- Built Member Dashboard at /dashboard/page.tsx:
+  - "Welcome to Your Vault, Guardian" welcome banner
+  - 4 quick stat badges (Vault Status, Saved Searches, Audited Bids, Membership)
+  - 3 large action cards: Find Audited Pros, Audit a Bid, My Shield Vault
+  - Each card: icon, title, description, "Get Started" link with hover animations
+  - Pro Tip banner, VAULT ACTIVE badge in header
+- Built Roofing Template at /dashboard/roofing/page.tsx:
+  - 3 sample Shield-Verified contractor profiles with rich data:
+    - Apex Roofing & Waterproofing (Guardian Score 96, 22 yrs, Anaheim)
+    - Pacific Crest Roofing Co. (Guardian Score 91, 14 yrs, Irvine)
+    - Golden State Roof Systems (Guardian Score 93, 18 yrs, Santa Fe Springs)
+  - Each card: name, license, CSLB status, rating, specialties, insurance, red flags, verification checks
+  - Action buttons: View Full Profile, Call, Website
+  - CTA to Audit a Bid at bottom
+- All routes compile, lint passes 0 errors
+
+Stage Summary:
+- Complete user flow: /join (passcode → email) → GHL webhook → /dashboard → /dashboard/roofing
+- 3 new routes created: /api/guardian/lead, /dashboard, /dashboard/roofing
+- GHL webhook ready (set GHL_WEBHOOK_URL in .env to activate)
