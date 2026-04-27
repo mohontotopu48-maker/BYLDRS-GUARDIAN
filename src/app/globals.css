@@ -331,3 +331,15 @@
 .cursor-blink {
   animation: blink 1s step-end infinite;
 }
+
+/* Guardian Side Tab — hover slide-out */
+.guardian-side-tab {
+  transition: all 0.3s ease-out;
+  border-radius: 20px 0 0 20px;
+}
+
+.guardian-side-tab:hover {
+  transform: translateX(-15px);
+  box-shadow: 0 0 35px rgba(59, 183, 158, 0.55);
+  background-color: #2A9B85;
+}

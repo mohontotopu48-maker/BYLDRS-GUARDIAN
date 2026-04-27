@@ -84,3 +84,21 @@ Stage Summary:
 - Side tab fully redesigned per all 4 specifications
 - Geometry, branding, motion, and redirect all active
 - Ready for /ask-the-guardian page build
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: Fix 404 for /ask-the-guardian + Correct Tab Geometry
+
+Work Log:
+- Created /ask-the-guardian route at src/app/ask-the-guardian/page.tsx
+- New page includes: same Deep Guardian Blue background, hex pattern, same header/footer, "Back to Guardian Portal" link, centered "Guardian AI Auditor" title with Bot icon, "Coming Soon" badge with lock animation, 3 feature hint cards (Contractor Verification, AI Bid Auditing, Smart Risk Analysis)
+- Fixed tab geometry: replaced Tailwind arbitrary border-radius with inline style={{ borderRadius: '20px 0 0 20px' }} AND matching CSS class .guardian-side-tab for guaranteed correctness
+- Fixed hover motion: moved from Tailwind hover classes to CSS .guardian-side-tab:hover with transform: translateX(-15px) — guaranteed to slide LEFT toward center
+- Lint passes with 0 errors
+
+Stage Summary:
+- /ask-the-guardian route now returns 200 (was 404)
+- Tab border-radius: 20px on left (rounded, facing content), 0 on right (sharp, flush with viewport)
+- Tab hover: slides 15px to the left with 0.3s ease-out transition
+- Design continuity maintained across both pages

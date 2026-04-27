@@ -370,18 +370,15 @@ export default function Home() {
           type="button"
           onClick={() => router.push("/ask-the-guardian")}
           className="
+            guardian-side-tab
             group relative flex flex-col items-center justify-center
             bg-[#3BB79E]
             text-white
-            pl-3.5 pr-4 pt-6 pb-8
-            cursor-pointer select-none
-            rounded-l-[20px] rounded-r-0
+            pl-4 pr-3 pt-6 pb-8
+            cursor-pointer select-none border-none outline-none
             shadow-[0_0_20px_rgba(59,183,158,0.35)]
-            transition-all duration-300 ease-out
-            hover:-translate-x-[15px]
-            hover:shadow-[0_0_35px_rgba(59,183,158,0.55)]
-            hover:bg-[#2A9B85]
           "
+          style={{ borderRadius: '20px 0 0 20px' }}
           aria-label="Ask the Guardian AI Assistant"
         >
           {/* ← Chevron handle — points left toward content */}
