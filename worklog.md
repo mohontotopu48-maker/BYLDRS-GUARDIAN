@@ -126,3 +126,29 @@ Stage Summary:
 - "What's Inside?" section gives users clear preview of three platform features
 - Human trust factor adds professional credibility with registered professional badge
 - All existing functionality (passcode form, tab redirect, tab geometry) preserved
+
+---
+Task ID: 5
+Agent: Main Agent
+Task: Replace "Coming Soon" on /ask-the-guardian with Active Audit Form
+
+Work Log:
+- Rewrote /ask-the-guardian/page.tsx: removed Coming Soon lock icon and badge
+- New headline: "Get Your Professional Bid Audit."
+- New sub-headline: AI syncing with CSLB, State-Registered Guardians performing manual bid reviews
+- Built FileUploadZone component: drag-and-drop + click-to-browse, accepts PDF/PNG/JPG/WebP, shows file preview with clear button
+- Added email input with Mail icon: "Where should we send your Risk Report?"
+- CTA button: Guardian Teal "START MANUAL AUDIT" with loading state
+- Success state: green confirmation message with 24hr timeline
+- Error state: red error message with fallback instructions
+- Created API route at /api/guardian/audit (POST) with server-side validation (email format, file type, 25MB max)
+- Warm home interior background added to this page too (opacity 0.15 for subtlety)
+- Trust indicators: Secure Upload, Manual Review, 24hr Report
+- "Back to Guardian Portal" link → / (active)
+- Lint: 0 errors
+
+Stage Summary:
+- /ask-the-guardian is now a fully functional audit submission page
+- File upload (drag & drop) + email capture + form submission all wired
+- API route validates input and acknowledges receipt
+- Design continuity maintained (Guardian Blue bg, hex pattern, same header/footer)
