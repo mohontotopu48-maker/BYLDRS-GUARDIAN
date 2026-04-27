@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { useMemberStore } from "@/lib/store/member-store";
 import {
   Shield,
   ShieldCheck,
@@ -132,6 +133,8 @@ export default function Home() {
     setStep(2);
   };
 
+  const activate = useMemberStore((s) => s.activate);
+
   const handleStep2 = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !firstName.trim()) return;
@@ -156,6 +159,15 @@ export default function Home() {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || "Activation failed");
       }
+
+      // Set Verified Member session state (persists in localStorage)
+      activate({
+        email: email.trim(),
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        phone: phone.trim(),
+        passcode: passcode.trim(),
+      });
 
       setStep(3);
       // Redirect to dashboard after success animation

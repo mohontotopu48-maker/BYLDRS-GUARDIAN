@@ -207,3 +207,62 @@ Stage Summary:
 - Complete funnel: /join → multi-step form → GHL webhook → /dashboard → 3 actions → /dashboard/roofing (3 sample profiles)
 - GHL integration ready: set GHL_WEBHOOK_URL in .env to activate webhook forwarding
 - All routes verified with 200 status codes
+
+---
+Task ID: 7
+Agent: Main Agent
+Task: Create Member Dashboard — Lock features behind Squeeze Page, Session State, Shield Active header, Member Only badges, Auto-tagged audit submissions
+
+Work Log:
+- Created Zustand member store at `src/lib/store/member-store.ts` with localStorage persistence via `zustand/middleware` persist
+  - Stores: isVerified, email, firstName, lastName, phone, passcode, activatedAt
+  - Actions: activate(), deactivate(), getFullName()
+  - Persists to localStorage key "guardian-member-session"
+- Created `src/components/auth-guard.tsx` — AuthGuard component
+  - Wraps protected pages; redirects unverified users to / (join page)
+  - Shows "Verifying your Shield..." loading state while Zustand hydrates from localStorage
+  - Shows "Members Only" lock screen with redirect message before redirecting
+  - 300ms hydration delay for Zustand persist middleware
+- Updated `/join` (page.tsx) — imported useMemberStore, calls activate() after successful GHL lead capture
+  - On step 2 success: calls activate({...memberData}) which persists to localStorage
+  - Then shows step 3 success → redirects to /dashboard after 1800ms
+- Rewrote `/dashboard/page.tsx`:
+  - Wrapped entire page in <AuthGuard>
+  - Added DashboardHeader component with:
+    - "SHIELD ACTIVE" badge: pulsing green dot + ShieldCheck icon + text
+    - "MY VAULT" button: FolderOpen icon in gold theme, links to #
+    - "Sign Out" button: clears session and redirects to /
+  - Personalized welcome: "Welcome back, {firstName}." with avatar initial
+  - Same 3 action cards: Find Audited Pros, Audit a Bid, My Shield Vault
+- Rewrote `/dashboard/roofing/page.tsx`:
+  - Wrapped in <AuthGuard>
+  - Added DashboardHeader (Shield Active + My Vault + Sign Out)
+  - Added "Member Only" gold badge to each contractor card's top bar (UserCheck icon)
+  - Added "Member Only Results" banner above search results explaining exclusivity
+  - Back link changed from "/" to "/dashboard"
+- Rewrote `/ask-the-guardian/page.tsx`:
+  - Wrapped in <AuthGuard>
+  - Added DashboardHeader (Shield Active + My Vault)
+  - Added "Member Only Tool" gold badge
+  - Removed email input field — auto-populated from member session store
+  - Shows "Results will be sent to {memberEmail}" notice
+  - Auto-tags form submission with: member email, first_name, last_name, passcode, source
+  - Success message personalized: "Bid received, {firstName}!"
+  - Changed trust indicator from "Manual Review" to "Auto-Tagged"
+  - Back link changed from "/" to "/dashboard"
+- Updated `/api/guardian/audit/route.ts`:
+  - Accepts new fields: member_first_name, member_last_name, member_passcode, source
+  - Builds GHL payload with full member data + audit file details
+  - Forwards to GHL_WEBHOOK_URL when configured
+  - Returns auditId in response
+- All routes verified: / 200, /dashboard 200, /dashboard/roofing 200, /ask-the-guardian 200
+- Lint: 0 errors
+
+Stage Summary:
+- Complete session state system: passcode entry → Zustand store → localStorage persistence
+- All 3 protected pages (dashboard, roofing, audit) gated behind AuthGuard
+- Dashboard header shows SHIELD ACTIVE (pulsing dot) + MY VAULT (gold folder icon)
+- Roofing search results show "Member Only" gold badge on each card + exclusivity banner
+- Bid Auditor auto-tags submissions with member email/name — no manual email entry needed
+- Audit API forwards member + audit data to GHL webhook when GHL_WEBHOOK_URL is configured
+- Sign Out button clears session and returns to /join
