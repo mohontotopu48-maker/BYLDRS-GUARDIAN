@@ -65,3 +65,22 @@ Stage Summary:
 - Side tab fully redesigned per spec: geometry flipped, hover motion added, visual clarity improved
 - Tab redirects to /ask-the-guardian on click
 - Smooth 15px leftward hover animation with enhanced glow effect
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Activate & Redesign the "Guardian AI" side tab
+
+Work Log:
+- Verified all four tab requirements against current implementation
+- Tab click: redirects to /ask-the-guardian via router.push()
+- Geometry flip: rounded-l-[20px] rounded-r-0 (rounded left facing page, sharp right flush to edge)
+- Visual: solid #3BB79E teal bg, ChevronLeft icon as handle above vertical text, pure white, no truncation
+- Motion: hover:-translate-x-[15px] with transition-all duration-300 ease-out
+- Confirmed clean compilation (no lint errors, no TS errors)
+- Dev log confirms 200 on / and 404 on /ask-the-guardian (expected - page not yet built)
+
+Stage Summary:
+- Side tab fully redesigned per all 4 specifications
+- Geometry, branding, motion, and redirect all active
+- Ready for /ask-the-guardian page build
