@@ -369,21 +369,50 @@ export default function Home() {
         <button
           type="button"
           onClick={() => router.push("/ask-the-guardian")}
-          className="flex flex-col items-center justify-center gap-3 bg-[#3BB79E] hover:bg-[#2A9B85] text-white px-3.5 py-6 shadow-lg shadow-[rgba(59,183,158,0.3)] hover:shadow-[rgba(59,183,158,0.5)] cursor-pointer group
-            transition-all duration-300 ease-out hover:-translate-x-[15px]
-            rounded-l-[20px] rounded-r-none"
+          className="
+            group relative flex flex-col items-center justify-center
+            bg-[#3BB79E]
+            text-white
+            pl-3.5 pr-4 pt-6 pb-8
+            cursor-pointer select-none
+            rounded-l-[20px] rounded-r-0
+            shadow-[0_0_20px_rgba(59,183,158,0.35)]
+            transition-all duration-300 ease-out
+            hover:-translate-x-[15px]
+            hover:shadow-[0_0_35px_rgba(59,183,158,0.55)]
+            hover:bg-[#2A9B85]
+          "
           aria-label="Ask the Guardian AI Assistant"
         >
-          {/* Chevron handle pointing left */}
-          <ChevronLeft className="w-5 h-5 text-white shrink-0 group-hover:-translate-x-[2px] transition-transform duration-300 ease-out" />
-          {/* Vertical text: top-to-bottom */}
+          {/* ← Chevron handle — points left toward content */}
+          <ChevronLeft
+            className="w-5 h-5 text-white shrink-0 mb-3
+              transition-transform duration-300 ease-out
+              group-hover:-translate-x-[3px]"
+          />
+
+          {/* Vertical label: reads top → bottom */}
           <span
-            className="[writing-mode:vertical-lr] [text-orientation:mixed] text-[11px] font-bold tracking-[0.22em] uppercase whitespace-nowrap text-white"
+            className="
+              [writing-mode:vertical-lr]
+              [text-orientation:mixed]
+              text-[11px] font-bold tracking-[0.22em] uppercase
+              whitespace-nowrap text-white leading-none
+            "
           >
             ASK THE GUARDIAN
-            <span className="block text-[9px] font-medium tracking-[0.18em] opacity-75 mt-2">
-              (BETA)
-            </span>
+          </span>
+
+          {/* BETA pill */}
+          <span
+            className="
+              mt-3 text-[8px] font-semibold tracking-[0.18em] uppercase
+              bg-white/15 rounded-sm px-1.5 py-0.5
+              [writing-mode:horizontal-tb]
+              text-white/85
+            "
+          >
+            BETA
           </span>
         </button>
       </motion.div>

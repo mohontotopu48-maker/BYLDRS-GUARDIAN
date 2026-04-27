@@ -46,3 +46,22 @@ Stage Summary:
 - Text reads top-to-bottom: "ASK THE GUARDIAN (BETA)"
 - ChevronLeft handle icon at top, white, fully visible
 - Hover: slides 15px left with 0.3s ease-out transition
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Redesign the Guardian AI side tab component
+
+Work Log:
+- Replaced side tab with clean implementation matching all 4 specs
+- Geometry flip: rounded-l-[20px] rounded-r-0 — left side (facing content) has 20px soft radius, right side (flush with screen) is perfectly sharp
+- Redirect: onClick navigates to /ask-the-guardian via router.push
+- Visual: solid #3BB79E teal background, ChevronLeft icon above vertical text, BETA pill below, all pure white
+- Hover: transition-all duration-300 ease-out hover:-translate-x-[15px] slides tab 15px outward on mouse over, with increased glow shadow and deeper teal
+- BETA text rendered as a small pill with horizontal-tb writing mode to prevent vertical distortion
+- ESLint: 0 errors, compilation: success
+
+Stage Summary:
+- Side tab fully redesigned per spec: geometry flipped, hover motion added, visual clarity improved
+- Tab redirects to /ask-the-guardian on click
+- Smooth 15px leftward hover animation with enhanced glow effect
