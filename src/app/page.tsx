@@ -9,6 +9,9 @@ import {
   Lock,
   ChevronRight,
   ChevronLeft,
+  FileText,
+  ScanSearch,
+  Eye,
 } from "lucide-react";
 
 /* ─────────────────────────────────────────────
@@ -37,18 +40,29 @@ function GuardianLogo() {
 }
 
 /* ─────────────────────────────────────────────
-   State-Registered Protection Badge
+   State-Registered Protection Badge + Guardian Avatar
    ───────────────────────────────────────────── */
 function ProtectionBadge() {
   return (
-    <div className="badge-shine flex items-center gap-2.5 bg-[rgba(0,20,60,0.7)] border border-[rgba(59,183,158,0.3)] rounded-lg px-4 py-2.5 backdrop-blur-sm">
-      <ShieldCheck className="w-5 h-5 text-[#3BB79E] shrink-0" />
-      <div className="flex flex-col">
-        <span className="text-[10px] font-medium tracking-[0.15em] uppercase text-[rgba(255,255,255,0.5)] leading-tight">
-          State-Registered Protection
-        </span>
-        <span className="text-sm font-bold text-white tracking-wide">
-          #165686 SP
+    <div className="flex flex-col items-end gap-2">
+      <div className="badge-shine flex items-center gap-2.5 bg-[rgba(0,20,60,0.7)] border border-[rgba(59,183,158,0.3)] rounded-lg px-4 py-2.5 backdrop-blur-sm">
+        <ShieldCheck className="w-5 h-5 text-[#3BB79E] shrink-0" />
+        <div className="flex flex-col">
+          <span className="text-[10px] font-medium tracking-[0.15em] uppercase text-[rgba(255,255,255,0.5)] leading-tight">
+            State-Registered Protection
+          </span>
+          <span className="text-sm font-bold text-white tracking-wide">
+            #165686 SP
+          </span>
+        </div>
+      </div>
+      {/* Guardian Trust Line */}
+      <div className="flex items-center gap-2">
+        <div className="w-6 h-6 rounded-full bg-[rgba(59,183,158,0.2)] border border-[rgba(59,183,158,0.3)] flex items-center justify-center">
+          <Shield className="w-3 h-3 text-[#3BB79E]" />
+        </div>
+        <span className="text-[10px] text-[rgba(255,255,255,0.4)] tracking-wide leading-tight">
+          Protection managed by California Registered Professionals.
         </span>
       </div>
     </div>
@@ -89,8 +103,21 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
-      {/* ─── Background ─── */}
+      {/* ─── Background Layers ─── */}
+      {/* Base Deep Guardian Blue */}
       <div className="fixed inset-0 bg-[#002D72]" />
+
+      {/* Warm home interior photo with overlay blend */}
+      <div
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: "url('/guardian-home-bg.png')",
+          mixBlendMode: "overlay",
+          opacity: 0.2,
+        }}
+      />
+
+      {/* Hexagonal tech pattern */}
       <div className="fixed inset-0 hex-pattern" />
 
       {/* Ambient glow effects */}
@@ -110,8 +137,11 @@ export default function Home() {
             <ProtectionBadge />
           </div>
           {/* Mobile badge - smaller */}
-          <div className="sm:hidden">
+          <div className="sm:hidden flex flex-col items-end gap-1.5">
             <ShieldCheck className="w-7 h-7 text-[#3BB79E]" />
+            <span className="text-[9px] text-[rgba(255,255,255,0.35)] text-right leading-tight max-w-[120px]">
+              Managed by CA Registered Professionals
+            </span>
           </div>
         </header>
 
@@ -248,14 +278,84 @@ export default function Home() {
                   </motion.div>
                 </div>
 
+                {/* ─── WHAT'S INSIDE? — Three Feature Cards ─── */}
+                <motion.div
+                  className="mt-8"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.9, duration: 0.6 }}
+                >
+                  {/* Section heading */}
+                  <p className="text-center text-[11px] font-semibold tracking-[0.25em] uppercase text-[rgba(255,255,255,0.3)] mb-5">
+                    What&apos;s Inside?
+                  </p>
+
+                  <div className="grid grid-cols-3 gap-3 sm:gap-4">
+                    {/* The Vault */}
+                    <div className="flex flex-col items-center text-center gap-2.5 p-3 sm:p-4 rounded-xl bg-[rgba(0,20,60,0.35)] border border-[rgba(255,255,255,0.05)] backdrop-blur-sm">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[rgba(59,183,158,0.1)] border border-[rgba(59,183,158,0.15)] flex items-center justify-center">
+                        <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                      </div>
+                      <div>
+                        <span className="block text-[11px] sm:text-xs font-bold text-white tracking-wide">
+                          The Vault
+                        </span>
+                        <span className="block text-[9px] sm:text-[10px] text-[rgba(255,255,255,0.4)] mt-1 leading-snug max-w-[120px] mx-auto">
+                          Your secure home for contracts &amp; permits.
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* The Auditor */}
+                    <div className="flex flex-col items-center text-center gap-2.5 p-3 sm:p-4 rounded-xl bg-[rgba(0,20,60,0.35)] border border-[rgba(255,255,255,0.05)] backdrop-blur-sm">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[rgba(59,183,158,0.1)] border border-[rgba(59,183,158,0.15)] flex items-center justify-center">
+                        <ScanSearch className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                      </div>
+                      <div>
+                        <span className="block text-[11px] sm:text-xs font-bold text-white tracking-wide">
+                          The Auditor
+                        </span>
+                        <span className="block text-[9px] sm:text-[10px] text-[rgba(255,255,255,0.4)] mt-1 leading-snug max-w-[120px] mx-auto">
+                          AI-powered bid scanning for Red Flags.
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* The Shield */}
+                    <div className="flex flex-col items-center text-center gap-2.5 p-3 sm:p-4 rounded-xl bg-[rgba(0,20,60,0.35)] border border-[rgba(255,255,255,0.05)] backdrop-blur-sm">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[rgba(59,183,158,0.1)] border border-[rgba(59,183,158,0.15)] flex items-center justify-center">
+                        <Eye className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                      </div>
+                      <div>
+                        <span className="block text-[11px] sm:text-xs font-bold text-white tracking-wide">
+                          The Shield
+                        </span>
+                        <span className="block text-[9px] sm:text-[10px] text-[rgba(255,255,255,0.4)] mt-1 leading-snug max-w-[120px] mx-auto">
+                          Live CSLB &amp; Insurance monitoring.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
                 {/* Mobile protection badge */}
                 <motion.div
                   className="sm:hidden mt-4 flex justify-center"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 0.8, duration: 0.5 }}
+                  transition={{ delay: 1.1, duration: 0.5 }}
                 >
-                  <ProtectionBadge />
+                  <div className="badge-shine flex items-center gap-2.5 bg-[rgba(0,20,60,0.7)] border border-[rgba(59,183,158,0.3)] rounded-lg px-4 py-2.5 backdrop-blur-sm">
+                    <ShieldCheck className="w-5 h-5 text-[#3BB79E] shrink-0" />
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-medium tracking-[0.15em] uppercase text-[rgba(255,255,255,0.5)] leading-tight">
+                        State-Registered Protection
+                      </span>
+                      <span className="text-sm font-bold text-white tracking-wide">
+                        #165686 SP
+                      </span>
+                    </div>
+                  </div>
                 </motion.div>
               </motion.div>
             ) : (

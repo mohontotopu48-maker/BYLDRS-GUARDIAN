@@ -102,3 +102,27 @@ Stage Summary:
 - Tab border-radius: 20px on left (rounded, facing content), 0 on right (sharp, flush with viewport)
 - Tab hover: slides 15px to the left with 0.3s ease-out transition
 - Design continuity maintained across both pages
+
+---
+Task ID: 4
+Agent: Main Agent
+Task: Refine /join Squeeze Page — Visual Warmth, Vault Explanation, Human Trust Factor
+
+Work Log:
+- Generated modern home interior background image (1344x768) via z-ai CLI → /public/guardian-home-bg.png
+- Added warm background layer: home interior photo with mix-blend-mode: overlay at 0.2 opacity, sandwiched between Deep Guardian Blue and hex pattern
+- Added "What's Inside?" section below main card with 3 feature cards in a 3-column grid:
+  - The Vault (FileText icon): "Your secure home for contracts & permits."
+  - The Auditor (ScanSearch icon): "AI-powered bid scanning for Red Flags."
+  - The Shield (Eye icon): "Live CSLB & Insurance monitoring."
+- Added Human Trust Factor: Guardian avatar (shield icon in teal circle) + "Protection managed by California Registered Professionals." sub-headline next to #165686 SP badge
+- Mobile: compact trust line below shield icon; full protection badge shown below main card
+- Added new icons: FileText, ScanSearch, Eye from lucide-react
+- Confirmed tab geometry (20px 0 0 20px) and /ask-the-guardian 404 fix still intact
+- Lint: 0 errors
+
+Stage Summary:
+- Splash page now has warm visual depth from home interior background
+- "What's Inside?" section gives users clear preview of three platform features
+- Human trust factor adds professional credibility with registered professional badge
+- All existing functionality (passcode form, tab redirect, tab geometry) preserved
