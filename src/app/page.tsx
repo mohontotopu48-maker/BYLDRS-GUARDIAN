@@ -8,7 +8,7 @@ import {
   ShieldCheck,
   Lock,
   ChevronRight,
-  MessageSquare,
+  ChevronLeft,
 } from "lucide-react";
 
 /* ─────────────────────────────────────────────
@@ -361,25 +361,31 @@ export default function Home() {
 
       {/* ─── SIDE TAB: "ASK THE GUARDIAN (BETA)" ─── */}
       <motion.div
-        initial={{ x: 100, opacity: 0 }}
+        initial={{ x: 80, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ delay: 1.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className="fixed right-0 top-1/2 -translate-y-1/2 z-50"
       >
-        <a
-          href="#"
-          className="side-tab flex items-center gap-2 bg-[#3BB79E] hover:bg-[#2A9B85] text-white px-3 py-5 rounded-l-xl shadow-lg shadow-[rgba(59,183,158,0.3)] transition-all duration-300 hover:shadow-[rgba(59,183,158,0.5)] group"
+        <button
+          type="button"
+          onClick={() => router.push("/ask-the-guardian")}
+          className="flex flex-col items-center justify-center gap-3 bg-[#3BB79E] hover:bg-[#2A9B85] text-white px-3.5 py-6 shadow-lg shadow-[rgba(59,183,158,0.3)] hover:shadow-[rgba(59,183,158,0.5)] cursor-pointer group
+            transition-all duration-300 ease-out hover:-translate-x-[15px]
+            rounded-l-[20px] rounded-r-none"
           aria-label="Ask the Guardian AI Assistant"
         >
-          <MessageSquare className="w-4 h-4 shrink-0 group-hover:scale-110 transition-transform" />
-          <span className="text-[11px] font-bold tracking-[0.2em] uppercase whitespace-nowrap">
+          {/* Chevron handle pointing left */}
+          <ChevronLeft className="w-5 h-5 text-white shrink-0 group-hover:-translate-x-[2px] transition-transform duration-300 ease-out" />
+          {/* Vertical text: top-to-bottom */}
+          <span
+            className="[writing-mode:vertical-lr] [text-orientation:mixed] text-[11px] font-bold tracking-[0.22em] uppercase whitespace-nowrap text-white"
+          >
             ASK THE GUARDIAN
-            <br />
-            <span className="text-[9px] font-medium tracking-[0.15em] opacity-70">
+            <span className="block text-[9px] font-medium tracking-[0.18em] opacity-75 mt-2">
               (BETA)
             </span>
           </span>
-        </a>
+        </button>
       </motion.div>
     </div>
   );

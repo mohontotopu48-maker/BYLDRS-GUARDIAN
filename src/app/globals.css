@@ -245,12 +245,6 @@
   z-index: 0;
 }
 
-/* Side tab styling */
-.side-tab {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  transform: rotate(180deg);
-}
 
 /* Shield icon animation */
 @keyframes shieldPulse {

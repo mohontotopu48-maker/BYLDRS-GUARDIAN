@@ -25,3 +25,24 @@ Stage Summary:
 - Hexagonal tech pattern overlay creates depth atmosphere
 - Redirect logic: passcode submit → loading state → success animation → router.push("/check-my-pro")
 - Page serves on / route as required
+---
+Task ID: 2
+Agent: Main Agent
+Task: Redesign the Guardian AI Side Tab
+
+Work Log:
+- Replaced anchor tag with button + router.push("/ask-the-guardian") for redirect
+- Flipped geometry: border-radius 20px 0 0 20px (rounded left/page-facing, sharp right/screen-edge)
+- Swapped MessageSquare icon for ChevronLeft arrow (←) placed at top as a handle
+- Changed vertical text from writing-mode:vertical-rl + rotate(180deg) to writing-mode:vertical-lr for top-to-bottom reading
+- Added hover:-translate-x-[15px] with transition-all duration-300 ease-out for slide-out invitation effect
+- Chevron icon also shifts 2px left on hover for micro-interaction
+- Removed unused .side-tab CSS class from globals.css
+- Lint: 0 errors, compilation: successful
+
+Stage Summary:
+- Side tab now redirects to /ask-the-guardian on click
+- Geometry: rounded-l-[20px] rounded-r-none
+- Text reads top-to-bottom: "ASK THE GUARDIAN (BETA)"
+- ChevronLeft handle icon at top, white, fully visible
+- Hover: slides 15px left with 0.3s ease-out transition
