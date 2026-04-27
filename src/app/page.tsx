@@ -12,46 +12,17 @@ import {
 } from "lucide-react";
 
 /* ─────────────────────────────────────────────
-   BYLDRS GUARDIAN Logo (White version)
+   BYLDRS GUARDIAN Logo
    ───────────────────────────────────────────── */
 function GuardianLogo() {
   return (
     <div className="flex items-center gap-3">
-      {/* Shield Icon */}
-      <svg
-        width="44"
-        height="50"
-        viewBox="0 0 44 50"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M22 1L2 12V28C2 39.1 10.68 49.34 22 50C33.32 49.34 42 39.1 42 28V12L22 1Z"
-          fill="url(#shieldGrad)"
-          stroke="#3BB79E"
-          strokeWidth="1.5"
-        />
-        <path
-          d="M15 25L20 30L30 19"
-          stroke="white"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <defs>
-          <linearGradient
-            id="shieldGrad"
-            x1="22"
-            y1="1"
-            x2="22"
-            y2="50"
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop stopColor="#002D72" />
-            <stop offset="1" stopColor="#001D4A" />
-          </linearGradient>
-        </defs>
-      </svg>
+      {/* App Icon */}
+      <img
+        src="/guardian-logo.png"
+        alt="BYLDRS GUARDIAN"
+        className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg object-contain"
+      />
       {/* Text */}
       <div className="flex flex-col leading-none">
         <span className="text-white text-xl font-bold tracking-[0.2em] uppercase">
