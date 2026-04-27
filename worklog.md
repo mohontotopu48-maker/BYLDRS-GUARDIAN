@@ -188,3 +188,22 @@ Stage Summary:
 - Complete user flow: /join (passcode → email) → GHL webhook → /dashboard → /dashboard/roofing
 - 3 new routes created: /api/guardian/lead, /dashboard, /dashboard/roofing
 - GHL webhook ready (set GHL_WEBHOOK_URL in .env to activate)
+
+---
+Task ID: 6
+Agent: Main Agent
+Task: Verify Lead Capture + GHL Integration + Dashboard + Roofing Template
+
+Work Log:
+- Verified all 4 existing components are fully built and compiling
+- / (splash page): Multi-step form — Step 1 passcode → Step 2 email/name/phone → Step 3 success → redirect to /dashboard
+- /api/guardian/lead: POST endpoint accepting passcode, email, firstName, lastName, phone → forwards to GHL webhook (env: GHL_WEBHOOK_URL) → returns 200 with confirmation
+- /dashboard: Member Dashboard with 3 action cards: Find Audited Pros (→/dashboard/roofing), Audit a Bid (→/ask-the-guardian), My Shield Vault (#). Includes stats row and Pro Tip banner
+- /dashboard/roofing: Template page with 3 Shield-Verified contractor profiles (Apex Roofing, Pacific Crest, Golden State). Each has Guardian Score, CSLB status, insurance check, specialties, star ratings, 0 Red Flags
+- All routes tested: / 200, /dashboard 200, /dashboard/roofing 200, /ask-the-guardian 200, /api/guardian/lead 200
+- Lint: 0 errors
+
+Stage Summary:
+- Complete funnel: /join → multi-step form → GHL webhook → /dashboard → 3 actions → /dashboard/roofing (3 sample profiles)
+- GHL integration ready: set GHL_WEBHOOK_URL in .env to activate webhook forwarding
+- All routes verified with 200 status codes
