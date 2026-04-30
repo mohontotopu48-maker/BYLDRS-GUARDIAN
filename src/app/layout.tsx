@@ -89,6 +89,34 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "BYLDRS GUARDIAN",
+              url: "https://bldrsguardian.com",
+              logo: "https://bldrsguardian.com/logo.svg",
+              description: "California's only AI-powered project protection platform. Audit bids, verify contractors, and secure your home in the Vault.",
+              address: [
+                {
+                  "@type": "PostalAddress",
+                  addressLocality: "Santa Fe Springs",
+                  addressRegion: "CA",
+                  addressCountry: "US",
+                },
+                {
+                  "@type": "PostalAddress",
+                  addressLocality: "Irvine",
+                  addressRegion: "CA",
+                  addressCountry: "US",
+                },
+              ],
+              sameAs: ["https://vsualdigitalmedia.com"],
+            }),
+          }}
+        />
         {children}
       </body>
     </html>

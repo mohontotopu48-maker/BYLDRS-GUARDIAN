@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { rateLimit, sanitize } from "@/lib/rate-limit";
 
 /**
  * GoHighLevel (GHL) Lead Capture Webhook
@@ -9,30 +10,9 @@ import { z } from "zod";
  */
 
 const GHL_WEBHOOK_URL = process.env.GHL_WEBHOOK_URL || "";
-
-// Simple in-memory rate limiter (per IP)
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const VALID_PASSCODES = ["HIS-165686-PRO"];
 const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
 const RATE_LIMIT_MAX = 5; // max 5 submissions per minute per IP
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
-  }
-
-  entry.count++;
-  return entry.count > RATE_LIMIT_MAX;
-}
-
-// Sanitize string — strip HTML tags and trim
-function sanitize(str: unknown): string {
-  if (typeof str !== "string") return "";
-  return str.replace(/<[^>]*>/g, "").trim().slice(0, 200);
-}
 
 const LeadSchema = z.object({
   passcode: z.string().min(1, "Passcode is required").max(50),
@@ -46,7 +26,7 @@ export async function POST(request: NextRequest) {
   try {
     // Rate limit check
     const ip = request.headers.get("x-forwarded-for") || "unknown";
-    if (isRateLimited(ip)) {
+    if (rateLimit(ip, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_MS)) {
       return NextResponse.json(
         { error: "Too many requests. Please try again in a minute." },
         { status: 429 }
@@ -65,6 +45,14 @@ export async function POST(request: NextRequest) {
     }
 
     const { passcode, email, firstName, lastName, phone } = result.data;
+
+    // Server-side passcode validation — reject unauthorized activations
+    if (!VALID_PASSCODES.includes(passcode.trim())) {
+      return NextResponse.json(
+        { error: "Invalid passcode. Please check your invitation and try again." },
+        { status: 403 }
+      );
+    }
 
     // Build GHL-compatible payload (sanitized)
     const ghlPayload = {

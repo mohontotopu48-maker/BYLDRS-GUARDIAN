@@ -17,29 +17,10 @@ import {
   LogOut,
   Star,
 } from "lucide-react";
+import { GuardianLogo } from "@/components/guardian-logo";
+import { GuardianFooter } from "@/components/guardian-footer";
 
-/* ─────────────────────────────────────────────
-   BYLDRS GUARDIAN Logo
-   ───────────────────────────────────────────── */
-function GuardianLogo() {
-  return (
-    <Link href="/" className="flex items-center gap-3 group">
-      <img
-        src="/guardian-logo.png"
-        alt="BYLDRS GUARDIAN"
-        className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg object-contain"
-      />
-      <div className="flex flex-col leading-none">
-        <span className="text-white text-xl font-bold tracking-[0.2em] uppercase group-hover:text-white/90 transition-colors">
-          BYLDRS
-        </span>
-        <span className="text-[#3BB79E] text-lg font-semibold tracking-[0.35em] uppercase">
-          GUARDIAN
-        </span>
-      </div>
-    </Link>
-  );
-}
+
 
 /* ─────────────────────────────────────────────
    Dashboard Action Card
@@ -139,7 +120,7 @@ function DashboardHeader() {
     <header className="w-full px-4 sm:px-6 lg:px-10 py-5 flex items-center justify-between">
       <GuardianLogo />
 
-      <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
         {/* Shield Active Status */}
         <motion.div
           initial={{ opacity: 0, x: 10 }}
@@ -172,7 +153,7 @@ function DashboardHeader() {
         >
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 bg-[rgba(201,168,76,0.08)] border border-[rgba(201,168,76,0.15)] rounded-lg px-3 py-2 hover:bg-[rgba(201,168,76,0.12)] hover:border-[rgba(201,168,76,0.25)] transition-all duration-300"
+            className="flex items-center gap-1.5 sm:gap-2 bg-[rgba(201,168,76,0.08)] border border-[rgba(201,168,76,0.15)] rounded-lg px-2 sm:px-3 py-2 hover:bg-[rgba(201,168,76,0.12)] hover:border-[rgba(201,168,76,0.25)] transition-all duration-300"
             aria-label="My Vault"
           >
             <FolderOpen className="w-4 h-4 text-[#C9A84C]" />
@@ -329,32 +310,7 @@ export default function Dashboard() {
             </div>
           </main>
 
-          {/* ─── FOOTER ─── */}
-          <footer className="relative z-10 px-4 sm:px-6 lg:px-10 py-6 border-t border-[rgba(255,255,255,0.05)] mt-auto">
-            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-              <div className="text-center sm:text-left">
-                <p className="text-[11px] text-[rgba(255,255,255,0.35)] tracking-wide">
-                  Powered by{" "}
-                  <a href="https://vsualdigitalmedia.com" target="_blank" rel="noopener noreferrer" className="text-[rgba(255,255,255,0.5)] hover:text-[#3BB79E] transition-colors duration-200">
-                    VSUALdigitalmedia.com
-                  </a>
-                </p>
-              </div>
-              <div className="flex items-center gap-4 text-[11px] text-[rgba(255,255,255,0.35)]">
-                <span className="flex items-center gap-1.5">
-                  <span>Office Locations:</span>
-                  <span className="text-[rgba(255,255,255,0.45)]">Santa Fe Springs</span>
-                  <span className="text-[rgba(255,255,255,0.15)]">|</span>
-                  <span className="text-[rgba(255,255,255,0.45)]">Irvine, CA</span>
-                </span>
-                <span className="text-[rgba(255,255,255,0.1)]">|</span>
-                <a href="https://www.cslb.ca.gov/OnlineServices/CheckLicenseII/LicenseDetail.aspx?LicNum=165686" target="_blank" rel="noopener noreferrer" className="text-[rgba(59,183,158,0.6)] hover:text-[#3BB79E] transition-colors duration-200 flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3" />
-                  Verify on CSLB
-                </a>
-              </div>
-            </div>
-          </footer>
+          <GuardianFooter />
         </div>
       </div>
     </AuthGuard>

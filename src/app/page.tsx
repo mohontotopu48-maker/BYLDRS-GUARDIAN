@@ -19,29 +19,10 @@ import {
   CheckCircle2,
   Loader2,
 } from "lucide-react";
+import { GuardianLogo } from "@/components/guardian-logo";
+import { GuardianFooter } from "@/components/guardian-footer";
 
-/* ─────────────────────────────────────────────
-   BYLDRS GUARDIAN Logo
-   ───────────────────────────────────────────── */
-function GuardianLogo() {
-  return (
-    <div className="flex items-center gap-3">
-      <img
-        src="/guardian-logo.png"
-        alt="BYLDRS GUARDIAN"
-        className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg object-contain"
-      />
-      <div className="flex flex-col leading-none">
-        <span className="text-white text-xl font-bold tracking-[0.2em] uppercase">
-          BYLDRS
-        </span>
-        <span className="text-[#3BB79E] text-lg font-semibold tracking-[0.35em] uppercase">
-          GUARDIAN
-        </span>
-      </div>
-    </div>
-  );
-}
+
 
 /* ─────────────────────────────────────────────
    State-Registered Protection Badge + Guardian Avatar
@@ -560,32 +541,7 @@ export default function Home() {
           </AnimatePresence>
         </main>
 
-        {/* ─── FOOTER ─── */}
-        <footer className="relative z-10 px-4 sm:px-6 lg:px-10 py-6 border-t border-[rgba(255,255,255,0.05)]">
-          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="text-center sm:text-left">
-              <p className="text-[11px] text-[rgba(255,255,255,0.35)] tracking-wide">
-                Powered by{" "}
-                <a href="https://vsualdigitalmedia.com" target="_blank" rel="noopener noreferrer" className="text-[rgba(255,255,255,0.5)] hover:text-[#3BB79E] transition-colors duration-200">
-                  VSUALdigitalmedia.com
-                </a>
-              </p>
-            </div>
-            <div className="flex items-center gap-4 text-[11px] text-[rgba(255,255,255,0.35)]">
-              <span className="flex items-center gap-1.5">
-                <span>Office Locations:</span>
-                <span className="text-[rgba(255,255,255,0.45)]">Santa Fe Springs</span>
-                <span className="text-[rgba(255,255,255,0.15)]">|</span>
-                <span className="text-[rgba(255,255,255,0.45)]">Irvine, CA</span>
-              </span>
-              <span className="text-[rgba(255,255,255,0.1)]">|</span>
-              <a href="https://www.cslb.ca.gov/OnlineServices/CheckLicenseII/LicenseDetail.aspx?LicNum=165686" target="_blank" rel="noopener noreferrer" className="text-[rgba(59,183,158,0.6)] hover:text-[#3BB79E] transition-colors duration-200 flex items-center gap-1">
-                <ShieldCheck className="w-3 h-3" />
-                Verify on CSLB
-              </a>
-            </div>
-          </div>
-        </footer>
+        <GuardianFooter />
       </div>
 
       {/* ─── SIDE TAB ─── */}
@@ -593,7 +549,7 @@ export default function Home() {
         initial={{ x: 80, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ delay: 1.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed right-0 top-1/2 -translate-y-1/2 z-50"
+        className="fixed right-0 top-[60%] sm:top-1/2 -translate-y-1/2 z-50"
       >
         <button
           type="button"

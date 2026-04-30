@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, sanitize } from "@/lib/rate-limit";
 
 /**
  * GoHighLevel (GHL) Audit Webhook
@@ -9,29 +10,9 @@ import { NextRequest, NextResponse } from "next/server";
  */
 
 const GHL_WEBHOOK_URL = process.env.GHL_WEBHOOK_URL || "";
-
-// Simple in-memory rate limiter (per IP)
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const VALID_PASSCODES = ["HIS-165686-PRO"];
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 3; // max 3 uploads per minute per IP
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
-  }
-
-  entry.count++;
-  return entry.count > RATE_LIMIT_MAX;
-}
-
-function sanitize(str: unknown): string {
-  if (typeof str !== "string") return "";
-  return str.replace(/<[^>]*>/g, "").trim().slice(0, 200);
-}
 
 const VALID_FILE_TYPES = [
   "application/pdf",
@@ -46,7 +27,7 @@ export async function POST(request: NextRequest) {
   try {
     // Rate limit check
     const ip = request.headers.get("x-forwarded-for") || "unknown";
-    if (isRateLimited(ip)) {
+    if (rateLimit(ip, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_MS)) {
       return NextResponse.json(
         { error: "Too many uploads. Please try again in a minute." },
         { status: 429 }
@@ -73,6 +54,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: "Valid member email is required." },
         { status: 400 }
+      );
+    }
+
+    // Server-side passcode validation — reject unauthorized submissions
+    if (!memberPasscode || !VALID_PASSCODES.includes(String(memberPasscode).trim())) {
+      return NextResponse.json(
+        { error: "Valid Guardian passcode is required for audit submissions." },
+        { status: 403 }
       );
     }
 

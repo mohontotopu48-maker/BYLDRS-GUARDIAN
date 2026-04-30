@@ -20,6 +20,8 @@ import {
   Sparkles,
   Lock,
 } from "lucide-react";
+import { GuardianLogo } from "@/components/guardian-logo";
+import { GuardianFooter } from "@/components/guardian-footer";
 
 /* ─────────────────────────────────────────────
    InlineGuard — Locks specific sections for non-members
@@ -68,28 +70,7 @@ function InlineGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-/* ─────────────────────────────────────────────
-   BYLDRS GUARDIAN Logo
-   ───────────────────────────────────────────── */
-function GuardianLogo() {
-  return (
-    <Link href="/" className="flex items-center gap-3 group">
-      <img
-        src="/guardian-logo.png"
-        alt="BYLDRS GUARDIAN"
-        className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg object-contain"
-      />
-      <div className="flex flex-col leading-none">
-        <span className="text-white text-xl font-bold tracking-[0.2em] uppercase group-hover:text-white/90 transition-colors">
-          BYLDRS
-        </span>
-        <span className="text-[#3BB79E] text-lg font-semibold tracking-[0.35em] uppercase">
-          GUARDIAN
-        </span>
-      </div>
-    </Link>
-  );
-}
+
 
 /* ─────────────────────────────────────────────
    Dashboard Header — Reused on sub-pages
@@ -142,6 +123,7 @@ function FileUploadZone({
   file,
   onClear,
 }: {
+  // eslint-disable-next-line no-unused-vars
   onFileSelect: (file: File) => void;
   file: File | null;
   onClear: () => void;
@@ -232,6 +214,7 @@ function FileUploadZone({
         ${isDragging ? "border-[#3BB79E] bg-[rgba(59,183,158,0.08)]" : ""}
       `}
       aria-label="Upload contractor bid or contract file"
+      aria-busy={isDragging}
     >
       <div
         className={`w-12 h-12 rounded-xl border-2 border-dashed flex items-center justify-center transition-colors ${
@@ -475,6 +458,7 @@ export default function AskTheGuardian() {
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="flex items-center gap-2.5 bg-[rgba(59,183,158,0.1)] border border-[rgba(59,183,158,0.25)] rounded-xl px-4 py-3"
+                    role="status"
                   >
                     <CheckCircle2 className="w-5 h-5 text-[#3BB79E] shrink-0" />
                     <div>
@@ -494,6 +478,7 @@ export default function AskTheGuardian() {
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="flex items-center gap-2.5 bg-[rgba(255,80,80,0.1)] border border-[rgba(255,80,80,0.2)] rounded-xl px-4 py-3"
+                    role="alert"
                   >
                     <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
                     <p className="text-sm text-red-300">
@@ -550,44 +535,7 @@ export default function AskTheGuardian() {
           </motion.div>
         </main>
 
-        {/* ─── FOOTER ─── */}
-        <footer className="relative z-10 px-4 sm:px-6 lg:px-10 py-6 border-t border-[rgba(255,255,255,0.05)] mt-auto">
-          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="text-center sm:text-left">
-              <p className="text-[11px] text-[rgba(255,255,255,0.35)] tracking-wide">
-                Powered by{" "}
-                <a
-                  href="https://vsualdigitalmedia.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[rgba(255,255,255,0.5)] hover:text-[#3BB79E] transition-colors duration-200"
-                >
-                  VSUALdigitalmedia.com
-                </a>
-              </p>
-            </div>
-            <div className="flex items-center gap-4 text-[11px] text-[rgba(255,255,255,0.35)]">
-              <span className="flex items-center gap-1.5">
-                <span>Office Locations:</span>
-                <span className="text-[rgba(255,255,255,0.45)]">
-                  Santa Fe Springs
-                </span>
-                <span className="text-[rgba(255,255,255,0.15)]">|</span>
-                <span className="text-[rgba(255,255,255,0.45)]">Irvine, CA</span>
-              </span>
-              <span className="text-[rgba(255,255,255,0.1)]">|</span>
-              <a
-                href="https://www.cslb.ca.gov/OnlineServices/CheckLicenseII/LicenseDetail.aspx?LicNum=165686"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[rgba(59,183,158,0.6)] hover:text-[#3BB79E] transition-colors duration-200 flex items-center gap-1"
-              >
-                <ShieldCheck className="w-3 h-3" />
-                Verify on CSLB
-              </a>
-            </div>
-          </div>
-        </footer>
+        <GuardianFooter />
       </div>
     </div>
   );
