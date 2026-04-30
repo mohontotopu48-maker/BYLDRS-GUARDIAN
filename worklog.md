@@ -266,3 +266,24 @@ Stage Summary:
 - Bid Auditor auto-tags submissions with member email/name — no manual email entry needed
 - Audit API forwards member + audit data to GHL webhook when GHL_WEBHOOK_URL is configured
 - Sign Out button clears session and returns to /join
+---
+Task ID: 1
+Agent: Main
+Task: Fix redirect loop, un-gate ask-the-guardian, lock only Bid Auditor, force vault entry
+
+Work Log:
+- Read all critical files: member-store.ts, auth-guard.tsx, page.tsx, ask-the-guardian/page.tsx
+- Diagnosed root cause: member-store.ts had NO `isHydrated` flag; auth-guard.tsx used fragile `setTimeout(300ms)` instead of reading hydration state
+- Added `isHydrated: boolean` to MemberStore interface with `onRehydrateStorage` callback in persist config
+- Rewrote auth-guard.tsx: replaced setTimeout with real `isHydrated` check from store; shows "Loading..." while hydrating, only redirects when `isHydrated && !isVerified`
+- Removed `<AuthGuard>` wrapper from /ask-the-guardian page (was wrapping entire page on line 274)
+- Created `InlineGuard` component that only locks the file upload (Bid Auditor) section, showing "Shield Passcode Required for Professional Audits" with CTA to /join
+- Verified vault activation flow: activate() → setStep(3) → setTimeout(1800ms) → router.push('/dashboard') — confirmed correct
+- Removed unused imports (FolderOpen, UserCheck, FolderOpen duplicate)
+- Ran lint — no errors
+
+Stage Summary:
+- member-store.ts: Added `isHydrated` flag + `onRehydrateStorage` callback
+- auth-guard.tsx: Complete rewrite with proper hydration gate (no more setTimeout)
+- ask-the-guardian/page.tsx: Removed page-level AuthGuard, added InlineGuard for file upload only
+- Redirect loop fixed: hydration race condition eliminated

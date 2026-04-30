@@ -12,6 +12,8 @@ export interface MemberSession {
 }
 
 interface MemberStore extends MemberSession {
+  /** True once Zustand has finished reading from localStorage */
+  isHydrated: boolean;
   activate: (data: {
     email: string;
     firstName: string;
@@ -37,6 +39,7 @@ export const useMemberStore = create<MemberStore>()(
   persist(
     (set, get) => ({
       ...DEFAULT_SESSION,
+      isHydrated: false,
 
       activate: (data) => {
         set({
@@ -71,6 +74,17 @@ export const useMemberStore = create<MemberStore>()(
         passcode: state.passcode,
         activatedAt: state.activatedAt,
       }),
+      onRehydrateStorage: () => {
+        return (state, error) => {
+          if (!error && state) {
+            // Mark hydration complete — now safe to read isVerified
+            state.isHydrated = true;
+          }
+          if (error) {
+            console.warn("MemberStore rehydration error:", error);
+          }
+        };
+      },
     }
   )
 );
