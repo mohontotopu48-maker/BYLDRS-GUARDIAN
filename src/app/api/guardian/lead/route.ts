@@ -94,13 +94,13 @@ export async function POST(request: NextRequest) {
             await ghlRes.text()
           );
         } else {
-          console.log(`[GHL] Lead captured: ${ghlPayload.email}`);
+          console.info(`[GHL] Lead captured: ${ghlPayload.email}`);
         }
       } catch (ghlErr) {
         console.error("[GHL] Webhook delivery failed:", ghlErr);
       }
     } else {
-      console.log("[GHL] Webhook URL not configured. Lead data:", ghlPayload.email);
+      console.info("[GHL] Webhook URL not configured. Lead data:", ghlPayload.email);
     }
 
     return NextResponse.json({

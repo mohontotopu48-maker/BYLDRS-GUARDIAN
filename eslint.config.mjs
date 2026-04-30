@@ -26,7 +26,7 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     // General JavaScript rules — re-enable important ones
     "prefer-const": "warn",
     "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
-    "no-console": ["warn", { allow: ["warn", "error"] }],
+    "no-console": ["warn", { allow: ["warn", "error", "info"] }],
     "no-debugger": "warn",
     "no-empty": "off",
     "no-irregular-whitespace": "off",

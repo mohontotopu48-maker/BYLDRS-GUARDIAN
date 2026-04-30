@@ -14,7 +14,7 @@ export interface MemberSession {
 interface MemberStore extends MemberSession {
   /** True once Zustand has finished reading from localStorage */
   isHydrated: boolean;
-  activate: (data: {
+  activate: (_data: {
     email: string;
     firstName: string;
     lastName: string;

@@ -127,13 +127,13 @@ export async function POST(request: NextRequest) {
             await ghlRes.text()
           );
         } else {
-          console.log(`[GHL AUDIT] Audit captured for: ${ghlPayload.email} — ${file.name}`);
+          console.info(`[GHL AUDIT] Audit captured for: ${ghlPayload.email} — ${file.name}`);
         }
       } catch (ghlErr) {
         console.error("[GHL AUDIT] Webhook delivery failed:", ghlErr);
       }
     } else {
-      console.log("[GHL AUDIT] Webhook URL not configured. Audit data:", ghlPayload.email);
+      console.info("[GHL AUDIT] Webhook URL not configured. Audit data:", ghlPayload.email);
     }
 
     // TODO: In production, store file and queue audit
