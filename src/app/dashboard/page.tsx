@@ -1,23 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { AuthGuard } from "@/components/auth-guard";
 import { useMemberStore } from "@/lib/store/member-store";
 import {
-  Shield,
   ShieldCheck,
   Search,
   FileText,
   Lock,
   ChevronRight,
   ScanSearch,
-  Eye,
-  Star,
-  TrendingUp,
   Zap,
   FolderOpen,
   LogOut,
+  Star,
 } from "lucide-react";
 
 /* ─────────────────────────────────────────────
@@ -134,7 +132,7 @@ function StatBadge({
    Dashboard Header — Shield Active + My Vault
    ───────────────────────────────────────────── */
 function DashboardHeader() {
-  const memberEmail = useMemberStore((s) => s.email);
+  const router = useRouter();
   const deactivate = useMemberStore((s) => s.deactivate);
 
   return (
@@ -173,8 +171,9 @@ function DashboardHeader() {
           transition={{ delay: 0.4, duration: 0.4 }}
         >
           <Link
-            href="#"
+            href="/dashboard"
             className="flex items-center gap-2 bg-[rgba(201,168,76,0.08)] border border-[rgba(201,168,76,0.15)] rounded-lg px-3 py-2 hover:bg-[rgba(201,168,76,0.12)] hover:border-[rgba(201,168,76,0.25)] transition-all duration-300"
+            aria-label="My Vault"
           >
             <FolderOpen className="w-4 h-4 text-[#C9A84C]" />
             <span className="text-[10px] sm:text-xs font-semibold text-[#C9A84C] tracking-wide hidden sm:block">
@@ -190,10 +189,11 @@ function DashboardHeader() {
           transition={{ delay: 0.5, duration: 0.4 }}
           onClick={() => {
             deactivate();
-            window.location.href = "/";
+            router.push("/");
           }}
           className="flex items-center gap-1.5 text-[rgba(255,255,255,0.3)] hover:text-red-400 transition-colors px-2 py-2 rounded-lg hover:bg-[rgba(255,80,80,0.05)]"
           title="Sign out"
+          aria-label="Sign out of your account"
         >
           <LogOut className="w-4 h-4" />
           <span className="text-[10px] hidden sm:block">Sign Out</span>
@@ -238,7 +238,7 @@ export default function Dashboard() {
           <DashboardHeader />
 
           {/* ─── MAIN CONTENT ─── */}
-          <main className="flex-1 px-4 sm:px-6 lg:px-10 py-6 sm:py-10">
+          <main id="main-content" className="flex-1 px-4 sm:px-6 lg:px-10 py-6 sm:py-10">
             <div className="max-w-3xl mx-auto">
               {/* Welcome banner — personalized */}
               <motion.div
@@ -305,7 +305,7 @@ export default function Dashboard() {
                   icon={Lock}
                   title="My Shield Vault"
                   description="Your encrypted vault for storing contracts, permits, insurance docs, and project records. Protected and accessible anytime."
-                  href="#"
+                  href="/dashboard"
                   iconBg="bg-[rgba(201,168,76,0.1)]"
                   accent="text-[#C9A84C]"
                   delay={0.4}

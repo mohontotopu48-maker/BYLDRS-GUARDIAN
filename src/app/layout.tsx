@@ -1,7 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,8 +12,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#002D72",
+};
+
 export const metadata: Metadata = {
-  title: "BYLDRS GUARDIAN — Claim Your Lifelong Protection",
+  title: {
+    default: "BYLDRS GUARDIAN — Claim Your Lifelong Protection",
+    template: "%s | BYLDRS GUARDIAN",
+  },
   description:
     "California's only AI-powered project protection platform. Audit bids, verify contractors, and secure your home in the Vault.",
   keywords: [
@@ -24,24 +33,42 @@ export const metadata: Metadata = {
     "California construction",
     "AI project protection",
     "bid auditing",
-    "CSLB",
+    "CSLB verification",
+    "roofing contractor",
+    "home improvement safety",
   ],
-  authors: [{ name: "VSUAL Digital Media" }],
+  authors: [{ name: "VSUAL Digital Media", url: "https://vsualdigitalmedia.com" }],
+  creator: "VSUAL Digital Media",
+  publisher: "VSUAL Digital Media",
   icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
+    icon: "/logo.svg",
+    apple: "/logo.svg",
   },
+  metadataBase: new URL("https://bldrsguardian.com"),
   openGraph: {
     title: "BYLDRS GUARDIAN — Your Invitation to the Shield",
     description:
       "Remodeling shouldn't be a gamble. Accept your complimentary membership to access California's only AI-powered project protection platform.",
     siteName: "BYLDRS GUARDIAN",
     type: "website",
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     title: "BYLDRS GUARDIAN — Your Invitation to the Shield",
     description:
       "Remodeling shouldn't be a gamble. Accept your complimentary membership to access California's only AI-powered project protection platform.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -55,8 +82,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        {/* Skip to main content — accessibility */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-[#3BB79E] focus:text-white focus:text-sm focus:font-semibold"
+        >
+          Skip to main content
+        </a>
         {children}
-        <Toaster />
       </body>
     </html>
   );

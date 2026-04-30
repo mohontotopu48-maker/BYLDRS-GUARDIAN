@@ -6,15 +6,53 @@ import { NextRequest, NextResponse } from "next/server";
  * Receives bid audit submissions from verified Guardian members.
  * The file is validated, member data is auto-tagged, and results are
  * forwarded to the GHL webhook for CRM tracking.
- *
- * GHL Webhook URL should be set in .env as:
- *   GHL_WEBHOOK_URL=https://services.leadconnectorhq.com/hooks/...
  */
 
 const GHL_WEBHOOK_URL = process.env.GHL_WEBHOOK_URL || "";
 
+// Simple in-memory rate limiter (per IP)
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 3; // max 3 uploads per minute per IP
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+
+  entry.count++;
+  return entry.count > RATE_LIMIT_MAX;
+}
+
+function sanitize(str: unknown): string {
+  if (typeof str !== "string") return "";
+  return str.replace(/<[^>]*>/g, "").trim().slice(0, 200);
+}
+
+const VALID_FILE_TYPES = [
+  "application/pdf",
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/webp",
+];
+const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB
+
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit check
+    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "Too many uploads. Please try again in a minute." },
+        { status: 429 }
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
     const email = formData.get("email") as string | null;
@@ -23,6 +61,7 @@ export async function POST(request: NextRequest) {
     const memberPasscode = formData.get("member_passcode") as string | null;
     const source = (formData.get("source") as string) || "member-audit";
 
+    // Validate required fields
     if (!file) {
       return NextResponse.json(
         { error: "Missing file" },
@@ -30,58 +69,43 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!email) {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json(
-        { error: "Member email is required. Please ensure you are logged in." },
-        { status: 400 }
-      );
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: "Invalid email format" },
+        { error: "Valid member email is required." },
         { status: 400 }
       );
     }
 
     // Validate file type
-    const validTypes = [
-      "application/pdf",
-      "image/png",
-      "image/jpeg",
-      "image/jpg",
-      "image/webp",
-    ];
-    if (!validTypes.includes(file.type)) {
+    if (!VALID_FILE_TYPES.includes(file.type)) {
       return NextResponse.json(
         { error: "Invalid file type. Accepts PDF, PNG, JPG, or WebP." },
         { status: 400 }
       );
     }
 
-    // Validate file size (max 25MB)
-    const maxSize = 25 * 1024 * 1024;
-    if (file.size > maxSize) {
+    // Validate file size
+    if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
         { error: "File too large. Maximum size is 25MB." },
         { status: 400 }
       );
     }
 
+    const auditId = `audit-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
     // Build GHL-compatible payload — member data auto-tagged
     const ghlPayload = {
       event: "bid_audit_submitted",
       email: email.toLowerCase().trim(),
-      first_name: memberFirstName || "",
-      last_name: memberLastName || "",
-      phone: "",
-      passcode: memberPasscode || "",
-      source: `BYLDRS Guardian — ${source}`,
+      first_name: sanitize(memberFirstName),
+      last_name: sanitize(memberLastName),
+      passcode: sanitize(memberPasscode),
+      source: `BYLDRS Guardian — ${sanitize(source)}`,
       tag: "guardian-audit",
       audit_details: {
-        file_name: file.name,
+        audit_id: auditId,
+        file_name: sanitize(file.name),
         file_size: file.size,
         file_type: file.type,
         submitted_at: new Date().toISOString(),
@@ -102,22 +126,17 @@ export async function POST(request: NextRequest) {
             `[GHL AUDIT] Webhook returned ${ghlRes.status}:`,
             await ghlRes.text()
           );
-          // Don't fail the request — store locally as fallback
         } else {
-          console.log(`[GHL AUDIT] Audit captured for: ${email} — ${file.name}`);
+          console.log(`[GHL AUDIT] Audit captured for: ${ghlPayload.email} — ${file.name}`);
         }
       } catch (ghlErr) {
         console.error("[GHL AUDIT] Webhook delivery failed:", ghlErr);
       }
     } else {
-      // No webhook configured — log for development
-      console.log("[GHL AUDIT] Webhook URL not configured. Audit data:", ghlPayload);
+      console.log("[GHL AUDIT] Webhook URL not configured. Audit data:", ghlPayload.email);
     }
 
     // TODO: In production, store file and queue audit
-    console.log(
-      `[GUARDIAN AUDIT] New submission from member: ${memberFirstName || "Unknown"} ${memberLastName || ""} (${email}) — ${file.name} (${(file.size / 1024).toFixed(1)}KB)`
-    );
 
     return NextResponse.json({
       success: true,
@@ -125,9 +144,9 @@ export async function POST(request: NextRequest) {
         "Bid received. A State-Registered Guardian will review your submission and email your Risk Report within 24 hours.",
       fileName: file.name,
       fileSize: file.size,
-      email,
-      memberFirstName,
-      auditId: `audit-${Date.now()}`,
+      email: ghlPayload.email,
+      memberFirstName: ghlPayload.first_name,
+      auditId,
     });
   } catch (error) {
     console.error("[GUARDIAN AUDIT] Submission error:", error);

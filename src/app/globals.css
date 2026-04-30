@@ -343,3 +343,27 @@
   box-shadow: 0 0 35px rgba(59, 183, 158, 0.55);
   background-color: #2A9B85;
 }
+
+/* ===== ACCESSIBILITY: prefers-reduced-motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .scan-line {
+    display: none;
+  }
+
+  .shield-pulse {
+    animation: none;
+  }
+
+  .badge-shine::after {
+    animation: none;
+  }
+}

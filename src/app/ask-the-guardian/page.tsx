@@ -19,7 +19,6 @@ import {
   ScanSearch,
   Sparkles,
   Lock,
-  UserCheck,
 } from "lucide-react";
 
 /* ─────────────────────────────────────────────
@@ -121,8 +120,9 @@ function DashboardHeader() {
 
         {/* My Vault */}
         <Link
-          href="#"
+          href="/dashboard"
           className="flex items-center gap-2 bg-[rgba(201,168,76,0.08)] border border-[rgba(201,168,76,0.15)] rounded-lg px-3 py-2 hover:bg-[rgba(201,168,76,0.12)] transition-all duration-300"
+          aria-label="My Vault"
         >
           <FileText className="w-4 h-4 text-[#C9A84C]" />
           <span className="text-[10px] sm:text-xs font-semibold text-[#C9A84C] tracking-wide hidden sm:block">
@@ -213,7 +213,15 @@ function FileUploadZone({
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={() => inputRef.current?.click()}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          inputRef.current?.click();
+        }
+      }}
       onDragEnter={handleDragIn}
       onDragLeave={handleDragOut}
       onDragOver={handleDrag}
@@ -223,6 +231,7 @@ function FileUploadZone({
         cursor-pointer transition-all duration-200
         ${isDragging ? "border-[#3BB79E] bg-[rgba(59,183,158,0.08)]" : ""}
       `}
+      aria-label="Upload contractor bid or contract file"
     >
       <div
         className={`w-12 h-12 rounded-xl border-2 border-dashed flex items-center justify-center transition-colors ${
@@ -297,7 +306,7 @@ export default function AskTheGuardian() {
       formData.append("source", "member-dashboard-audit");
 
       const res = await fetch(
-        "/api/guardian/audit?XTransformPort=3000",
+        "/api/guardian/audit",
         {
           method: "POST",
           body: formData,
@@ -344,7 +353,7 @@ export default function AskTheGuardian() {
         <DashboardHeader />
 
         {/* ─── MAIN CONTENT ─── */}
-        <main className="flex-1 flex items-center justify-center px-4 py-8 sm:py-12">
+        <main id="main-content" className="flex-1 flex items-center justify-center px-4 py-8 sm:py-12">
           <motion.div
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}

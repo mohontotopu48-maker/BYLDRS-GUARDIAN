@@ -1,46 +1,78 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
 /**
  * GoHighLevel (GHL) Lead Capture Webhook
- * 
+ *
  * Receives lead data from the /join multi-step form and forwards
  * to the configured GHL webhook URL.
- * 
- * GHL Webhook URL should be set in .env as:
- *   NEXT_PUBLIC_GHL_WEBHOOK_URL=https://services.leadconnectorhq.com/hooks/...
  */
 
 const GHL_WEBHOOK_URL = process.env.GHL_WEBHOOK_URL || "";
 
+// Simple in-memory rate limiter (per IP)
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
+const RATE_LIMIT_MAX = 5; // max 5 submissions per minute per IP
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+
+  entry.count++;
+  return entry.count > RATE_LIMIT_MAX;
+}
+
+// Sanitize string — strip HTML tags and trim
+function sanitize(str: unknown): string {
+  if (typeof str !== "string") return "";
+  return str.replace(/<[^>]*>/g, "").trim().slice(0, 200);
+}
+
+const LeadSchema = z.object({
+  passcode: z.string().min(1, "Passcode is required").max(50),
+  email: z.string().email("Invalid email format").max(254),
+  firstName: z.string().max(100).optional().default(""),
+  lastName: z.string().max(100).optional().default(""),
+  phone: z.string().max(30).optional().default(""),
+});
+
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit check
+    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again in a minute." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
-    const { passcode, email, firstName, lastName, phone } = body;
 
-    // Validate required fields
-    if (!email || !passcode) {
+    // Validate with Zod
+    const result = LeadSchema.safeParse(body);
+    if (!result.success) {
       return NextResponse.json(
-        { error: "Email and passcode are required" },
+        { error: result.error.errors[0].message },
         { status: 400 }
       );
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: "Invalid email format" },
-        { status: 400 }
-      );
-    }
+    const { passcode, email, firstName, lastName, phone } = result.data;
 
-    // Build GHL-compatible payload
+    // Build GHL-compatible payload (sanitized)
     const ghlPayload = {
-      passcode,
+      passcode: sanitize(passcode),
       email: email.toLowerCase().trim(),
-      first_name: firstName || "",
-      last_name: lastName || "",
-      phone: phone || "",
+      first_name: sanitize(firstName),
+      last_name: sanitize(lastName),
+      phone: sanitize(phone),
       source: "BYLDRS Guardian /join",
       tag: "guardian-member",
       vault_status: "activated",
@@ -61,16 +93,14 @@ export async function POST(request: NextRequest) {
             `[GHL] Webhook returned ${ghlRes.status}:`,
             await ghlRes.text()
           );
-          // Don't fail the request — store locally as fallback
         } else {
-          console.log(`[GHL] Lead captured: ${email}`);
+          console.log(`[GHL] Lead captured: ${ghlPayload.email}`);
         }
       } catch (ghlErr) {
         console.error("[GHL] Webhook delivery failed:", ghlErr);
       }
     } else {
-      // No webhook configured — log for development
-      console.log("[GHL] Webhook URL not configured. Lead data:", ghlPayload);
+      console.log("[GHL] Webhook URL not configured. Lead data:", ghlPayload.email);
     }
 
     return NextResponse.json({

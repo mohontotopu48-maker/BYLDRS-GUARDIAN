@@ -119,10 +119,11 @@ export default function Home() {
   // Focus email input when step changes to 2
   useEffect(() => {
     if (step === 2) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         const el = document.getElementById("email-input");
         el?.focus();
       }, 300);
+      return () => clearTimeout(timer);
     }
   }, [step]);
 
@@ -222,7 +223,7 @@ export default function Home() {
         </header>
 
         {/* ─── MAIN CONTENT ─── */}
-        <main className="flex-1 flex items-center justify-center px-4 py-8 sm:py-12">
+        <main id="main-content" className="flex-1 flex items-center justify-center px-4 py-8 sm:py-12">
           <AnimatePresence mode="wait">
             {/* ──── STEP 3: SUCCESS ──── */}
             {step === 3 ? (
@@ -308,8 +309,12 @@ export default function Home() {
 
                       <form onSubmit={handleStep1} className="space-y-4">
                         <div className="relative">
-                          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(255,255,255,0.3)]" />
+                          <label htmlFor="passcode-input" className="sr-only">
+                            Invitation Passcode
+                          </label>
+                          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(255,255,255,0.3)]" aria-hidden="true" />
                           <input
+                            id="passcode-input"
                             ref={inputRef}
                             type="text"
                             value={passcode}
@@ -361,8 +366,12 @@ export default function Home() {
                         {/* Name row */}
                         <div className="grid grid-cols-2 gap-3">
                           <div className="relative">
-                            <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(255,255,255,0.3)]" />
+                            <label htmlFor="first-name-input" className="sr-only">
+                              First Name (required)
+                            </label>
+                            <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(255,255,255,0.3)]" aria-hidden="true" />
                             <input
+                              id="first-name-input"
                               type="text"
                               value={firstName}
                               onChange={(e) => setFirstName(e.target.value)}
@@ -373,8 +382,12 @@ export default function Home() {
                             />
                           </div>
                           <div className="relative">
-                            <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(255,255,255,0.3)]" />
+                            <label htmlFor="last-name-input" className="sr-only">
+                              Last Name
+                            </label>
+                            <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(255,255,255,0.3)]" aria-hidden="true" />
                             <input
+                              id="last-name-input"
                               type="text"
                               value={lastName}
                               onChange={(e) => setLastName(e.target.value)}
@@ -387,7 +400,10 @@ export default function Home() {
 
                         {/* Email */}
                         <div className="relative">
-                          <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(255,255,255,0.3)]" />
+                          <label htmlFor="email-input" className="sr-only">
+                            Email Address (required)
+                          </label>
+                          <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(255,255,255,0.3)]" aria-hidden="true" />
                           <input
                             id="email-input"
                             type="email"
@@ -402,8 +418,12 @@ export default function Home() {
 
                         {/* Phone (optional) */}
                         <div className="relative">
-                          <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(255,255,255,0.3)]" />
+                          <label htmlFor="phone-input" className="sr-only">
+                            Phone Number (optional)
+                          </label>
+                          <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(255,255,255,0.3)]" aria-hidden="true" />
                           <input
+                            id="phone-input"
                             type="tel"
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
@@ -419,6 +439,7 @@ export default function Home() {
                             initial={{ opacity: 0, y: -5 }}
                             animate={{ opacity: 1, y: 0 }}
                             className="text-xs text-red-400 text-center"
+                            role="alert"
                           >
                             {errorMsg}
                           </motion.p>

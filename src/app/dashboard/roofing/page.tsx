@@ -1,16 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { AuthGuard } from "@/components/auth-guard";
 import { useMemberStore } from "@/lib/store/member-store";
 import {
-  Shield,
   ShieldCheck,
   Star,
-  ArrowLeft,
   CheckCircle2,
   ExternalLink,
+  LogOut,
   MapPin,
   Phone,
   Clock,
@@ -50,6 +50,7 @@ function GuardianLogo() {
    Dashboard Header — Reused on sub-pages
    ───────────────────────────────────────────── */
 function DashboardHeader() {
+  const router = useRouter();
   const deactivate = useMemberStore((s) => s.deactivate);
 
   return (
@@ -77,8 +78,9 @@ function DashboardHeader() {
 
         {/* My Vault */}
         <Link
-          href="#"
+          href="/dashboard"
           className="flex items-center gap-2 bg-[rgba(201,168,76,0.08)] border border-[rgba(201,168,76,0.15)] rounded-lg px-3 py-2 hover:bg-[rgba(201,168,76,0.12)] transition-all duration-300"
+          aria-label="My Vault"
         >
           <FolderOpen className="w-4 h-4 text-[#C9A84C]" />
           <span className="text-[10px] sm:text-xs font-semibold text-[#C9A84C] tracking-wide hidden sm:block">
@@ -90,12 +92,13 @@ function DashboardHeader() {
         <button
           onClick={() => {
             deactivate();
-            window.location.href = "/";
+            router.push("/");
           }}
           className="flex items-center gap-1.5 text-[rgba(255,255,255,0.3)] hover:text-red-400 transition-colors px-2 py-2 rounded-lg hover:bg-[rgba(255,80,80,0.05)]"
           title="Sign out"
+          aria-label="Sign out"
         >
-          <Shield className="w-4 h-4" />
+          <LogOut className="w-4 h-4" />
           <span className="text-[10px] hidden sm:block">Sign Out</span>
         </button>
       </div>
@@ -270,18 +273,31 @@ function ContractorCard({
 
         {/* Action row */}
         <div className="flex items-center gap-3 pt-3 border-t border-[rgba(255,255,255,0.05)]">
-          <button className="flex-1 guardian-cta py-2.5 rounded-lg text-xs flex items-center justify-center gap-1.5">
+          <button
+            className="flex-1 guardian-cta py-2.5 rounded-lg text-xs flex items-center justify-center gap-1.5"
+            aria-label={`View full profile for ${c.name}`}
+          >
             <Search className="w-3.5 h-3.5" />
             <span>View Full Profile</span>
           </button>
-          <button className="flex items-center gap-1.5 text-[11px] text-[rgba(255,255,255,0.4)] hover:text-[#3BB79E] transition-colors px-3 py-2.5 rounded-lg bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(59,183,158,0.08)]">
+          <a
+            href={`tel:${c.phone}`}
+            className="flex items-center gap-1.5 text-[11px] text-[rgba(255,255,255,0.4)] hover:text-[#3BB79E] transition-colors px-3 py-2.5 rounded-lg bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(59,183,158,0.08)]"
+            aria-label={`Call ${c.name} at ${c.phone}`}
+          >
             <Phone className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Call</span>
-          </button>
-          <button className="flex items-center gap-1.5 text-[11px] text-[rgba(255,255,255,0.4)] hover:text-[#3BB79E] transition-colors px-3 py-2.5 rounded-lg bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(59,183,158,0.08)]">
+          </a>
+          <a
+            href={`https://www.google.com/search?q=${encodeURIComponent(c.name + " " + c.location + " roofing")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-[11px] text-[rgba(255,255,255,0.4)] hover:text-[#3BB79E] transition-colors px-3 py-2.5 rounded-lg bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(59,183,158,0.08)]"
+            aria-label={`Search website for ${c.name}`}
+          >
             <ExternalLink className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Website</span>
-          </button>
+          </a>
         </div>
       </div>
     </motion.div>
@@ -317,7 +333,7 @@ export default function RoofingPage() {
           <DashboardHeader />
 
           {/* ─── MAIN CONTENT ─── */}
-          <main className="flex-1 px-4 sm:px-6 lg:px-10 py-6 sm:py-10">
+          <main id="main-content" className="flex-1 px-4 sm:px-6 lg:px-10 py-6 sm:py-10">
             <div className="max-w-3xl mx-auto">
               {/* Page header */}
               <motion.div

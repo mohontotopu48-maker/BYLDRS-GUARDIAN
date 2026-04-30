@@ -287,3 +287,37 @@ Stage Summary:
 - auth-guard.tsx: Complete rewrite with proper hydration gate (no more setTimeout)
 - ask-the-guardian/page.tsx: Removed page-level AuthGuard, added InlineGuard for file upload only
 - Redirect loop fixed: hydration race condition eliminated
+---
+Task ID: 2
+Agent: Main (Full-Stack Audit & Fix)
+Task: Comprehensive production audit and fix of BYLDRS GUARDIAN — frontend, backend, SEO, mobile, accessibility
+
+Work Log:
+- Read ALL source files: layout.tsx, page.tsx, dashboard/page.tsx, dashboard/roofing/page.tsx, ask-the-guardian/page.tsx, auth-guard.tsx, member-store.ts, API routes, globals.css, next.config.ts, eslint.config.mjs, prisma schema, db.ts, public files
+- Ran Explore subagent for exhaustive file-by-file analysis
+- Identified 17 critical issues + 25+ warnings across frontend, backend, SEO, accessibility, performance
+
+Fixes applied:
+1. next.config.ts: Removed ignoreBuildErrors, enabled reactStrictMode, added poweredByHeader: false
+2. layout.tsx: Removed dead Toaster, added Viewport export, template title, metadataBase, OG locale, robots config, skip-to-content link, local favicon
+3. Created sitemap.ts (dynamic sitemap for / and /ask-the-guardian)
+4. Created robots.ts (dynamic — blocks /dashboard/ and /api/ from crawlers)
+5. page.tsx: Added <label> elements for ALL 5 inputs (sr-only), aria-hidden on decorative icons, role="alert" on error messages, id="main-content" landmark, fixed useEffect cleanup/step dep
+6. dashboard/page.tsx: Removed unused Shield/Eye/TrendingUp imports, fixed dead href="#" links to /dashboard, replaced window.location.href with router.push, added aria-label to sign-out and My Vault, id="main-content"
+7. dashboard/roofing/page.tsx: Removed unused ArrowLeft import, added LogOut import, replaced <button> Call/Website with real <a href="tel:..."> and Google search links, added aria-labels to all action buttons, fixed logout to use router.push, fixed My Vault dead link, added LogOut icon
+8. API lead/route.ts: Added Zod schema validation, in-memory rate limiting (5/min/IP), HTML tag sanitization on all string inputs
+9. API audit/route.ts: Removed XTransformPort from frontend fetch, added rate limiting (3/min/IP), added server-side unique auditId generation, stopped logging passcode in console, added sanitize() calls
+10. globals.css: Added comprehensive prefers-reduced-motion media query — disables all animations, hides scan-line
+11. Deleted dead /api/route.ts hello-world stub
+12. db.ts: Changed Prisma log from ['query'] to conditional ['warn','error'] in dev, ['error'] in prod
+13. ESLint: Re-enabled critical rules — no-unused-vars, no-console (warn level), react-hooks/exhaustive-deps, prefer-const, no-explicit-any, no-debugger, no-unreachable
+14. ask-the-guardian/page.tsx: Added role="button" + tabIndex + onKeyDown to file upload zone, fixed My Vault dead link, removed unused UserCheck import
+
+Stage Summary:
+- 0 ESLint errors (down from potential critical issues with disabled rules)
+- 14 warnings remaining (all pre-existing in shadcn/ui components or intentional server console.log)
+- Dev server: all pages serving 200 with fast compile times
+- SEO: Dynamic sitemap + robots, per-page title templates, OG metadata, crawler rules
+- Accessibility: Skip-to-content, labels on all inputs, aria-labels, role=alert, prefers-reduced-motion
+- Mobile: Verified responsive breakpoints working on all pages
+- Security: Zod validation, rate limiting, HTML sanitization, removed XTransformPort leak
